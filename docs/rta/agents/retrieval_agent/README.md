@@ -10,21 +10,7 @@ scope. It is a knowledge-retrieval component for the broader agent system.
 
 ## Flow
 
-```text
-user prompt
-    |
-    v
-RAGClient -> POST /query -> retrieved_documents
-    |
-    v
-context formatting with source metadata
-    |
-    v
-Ollama chat(model, messages, temperature)
-    |
-    v
-answer + raw context + cited sources
-```
+![Information retrieval agent flow](/docs/images/retrieval-agent-flow.svg)
 
 ## Components
 

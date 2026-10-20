@@ -20,55 +20,27 @@ An offline, local multi-agent system designed for automated cybersecurity assess
 
 ## Architecture Overview
 
-```text
-┌─────────────────────────────────────────────────────────────────┐
-│                        INTERFACE LAYER                          │
-│         CLI Dashboard (rich / prompt_toolkit / Streamlit)       │
-└────────────────────────────────┬────────────────────────────────┘
-                                 │
-                                 ▼
-┌──────────────────────────────────────────────────────────────────┐
-│                   ORCHESTRATOR & AGENT SYSTEM                    │
-│  - Supervisor Router (LangGraph / State Machine)                 │
-│  - Planner Agent | Recon Agent | Analysis Agent | Reporter Agent │
-│  - Shared State Store (SQLite / JSON)                            │
-└────────────────────────────────┬─────────────────────────────────┘
-                                 │
-                                 ▼
-┌────────────────────────────────────────────────────────────────────┐
-│                  LOCAL LLM INFERENCE ENGINE                        │
-│  - Ollama Daemon ([http://127.0.0.1:11434](http://127.0.0.1:11434))│
-│  - qwen2.5-coder:14b (Tooling) & llama3.1:8b (Summarization)       │
-└────────────────────────────────┬───────────────────────────────────┘
-                                 │
-                                 ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                  LOCAL KNOWLEDGE ENGINE (RAG)                   │
-│  - ChromaDB + sentence-transformers (all-MiniLM-L6-v2)          │
-│  - Offline Reference Notes & Documentation                      │
-└────────────────────────────────┬────────────────────────────────┘
-                                 │
-                                 ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                    SAFETY & GUARDRAIL ENGINE                    │
-│  - Target Scope Validator (Hardcoded CIDR Check via ipaddress)  │
-│  - Command Syntax Sanitizer & Operator Blacklist                │
-└────────────────────────────────┬────────────────────────────────┘
-                                 │
-                                 ▼
-┌─────────────────────────────────────────────────────────────────┐
-│               HUMAN-IN-THE-LOOP (HITL) GATEWAY                  │
-│  - Operator Review & Interactive Confirmation Prompt (y/N)      │
-└────────────────────────────────┬────────────────────────────────┘
-                                 │ Approved Commands
-                                 ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                    ISOLATED TOOL EXECUTOR                       │
-│  - Persistent Docker Container Sandbox (Debian / Kali Base)     │
-│  - Restricted Capability Profile & Isolated Local Network       │
-└─────────────────────────────────────────────────────────────────┘
-```
+![RTA system structure](docs/images/rta-architecture.svg)
 
+| Component | Technology | Status |
+| --- | --- | --- |
+| Interface | CLI dashboard (rich / prompt_toolkit / Streamlit) | Temporary CLI adapter |
+| Orchestrator and agents | Supervisor router (LangGraph / state machine), shared state (SQLite / JSON) | Retrieval agent implemented; others planned |
+| Local LLM inference | Ollama (`qwen2.5-coder:14b` for tooling, `llama3.1:8b` for summarization) | Implemented |
+| Local knowledge engine | ChromaDB + `all-MiniLM-L6-v2` embeddings, offline reference notes | Implemented (independent RAG service) |
+| Safety and guardrails | Hardcoded CIDR check via `ipaddress`, command syntax sanitizer, operator blacklist | Planned |
+| HITL gateway | Operator review and `y/N` confirmation prompt | Planned |
+| Isolated tool executor | Persistent Docker sandbox (Debian / Kali base), restricted capabilities and isolated local network | Planned |
+
+### Command lifecycle
+ 
+Every command an agent proposes must pass three independent checks before it
+runs. A failed check returns the command to the agent as blocked, so the agent
+can revise it instead of failing silently.
+ 
+![RTA command lifecycle](docs/images/rta-command-lifecycle.svg)
+ 
+ 
 ---
 
 ## Prerequisites & Dependencies

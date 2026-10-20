@@ -1,0 +1,5 @@
+# RTA framework dependencies
+-r rta/requirements.txt
+
+# RAG service dependencies
+-r services/rag/requirements.txt

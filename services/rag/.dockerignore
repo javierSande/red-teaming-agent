@@ -1,0 +1,7 @@
+data/raw_docs/
+data/chroma_db/
+
+__pycache__/
+*.py[cod]
+
+.DS_Store

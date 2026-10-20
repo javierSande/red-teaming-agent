@@ -1,0 +1,3 @@
+# RTA framework dependencies
+requests>=2.31.0
+ollama>=0.3.0

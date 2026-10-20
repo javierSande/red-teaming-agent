@@ -1,0 +1,16 @@
+# Python environments
+.venv/
+venv/
+
+# Python generated files
+__pycache__/
+*.py[cod]
+
+# Local data and generated vector indexes
+data/raw_docs/
+data/chroma_db/
+services/rag/data/raw_docs/
+services/rag/data/chroma_db/
+
+# macOS
+.DS_Store
